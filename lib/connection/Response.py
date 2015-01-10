@@ -43,6 +43,12 @@ class Response(object):
     def __hash__(self):
         return hash(self.body)
 
+    def __del__(self):
+        del(self.body)
+        del(self.headers)
+        del(self.status)
+        del(self.reason)
+
     @property
     def pretty(self):
         try:

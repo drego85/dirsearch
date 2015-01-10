@@ -18,7 +18,7 @@
 
 
 import threading
-import urllib
+import urllib.request, urllib.parse, urllib.error
 from lib.utils.FileUtils import File
 from thirdparty.oset import *
 
@@ -61,7 +61,7 @@ class FuzzerDictionary(object):
             if '%EXT%' in line:
                 for extension in self._extensions:
                     entry = (line.replace('%EXT%', extension))
-            self.entries.append(urllib.quote(entry))
+            self.entries.append(urllib.parse.quote(entry))
         if lowercase == True:
             self.entries = list(oset([entry.lower() for entry in self.entries]))
 
@@ -81,7 +81,7 @@ class FuzzerDictionary(object):
         self.condition.release()
         return currentIndex, result
 
-    def next(self, basePath=None):
+    def __next__(self, basePath=None):
         _, path = self.nextWithIndex(basePath)
         return path
 

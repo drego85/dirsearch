@@ -1,15 +1,17 @@
 # -*- coding: utf-8 -*-
 
-import ConfigParser
+import configparser
 import os
 import sys
 import time
+import gc
 from lib.utils import *
 from lib.core import *
 from lib.reports import *
 from lib.utils import *
 from lib.utils.Queue import Queue
 import time
+#from pympler import summary, tracker
 
 class SkipTargetInterrupt(Exception):
     pass
@@ -17,6 +19,7 @@ class SkipTargetInterrupt(Exception):
 class Controller(object):
 
     def __init__(self, script_path, arguments, output):
+        #self.tr = tracker.SummaryTracker()
         self.script_path = script_path
         self.exit = False
         self.arguments = arguments
@@ -42,7 +45,7 @@ class Controller(object):
                                                maxRetries=self.arguments.maxRetries, timeout=self.arguments.timeout,
                                                ip=self.arguments.ip, proxy=self.arguments.proxy,
                                                redirect=self.arguments.redirect)
-                    for key, value in arguments.headers.iteritems():
+                    for key, value in arguments.headers.items():
                         self.requester.setHeader(key, value)
                     # Initialize directories Queue with start Path
                     self.basePath = self.requester.basePath
@@ -59,10 +62,10 @@ class Controller(object):
                     self.wait()
                 except SkipTargetInterrupt:
                     continue
-        except RequestException, e:
+        except RequestException as e:
             self.output.printError('Unexpected error:\n{0}'.format(e.args[0]['message']))
             exit(0)
-        except KeyboardInterrupt, SystemExit:
+        except KeyboardInterrupt as SystemExit:
             self.output.printError('\nCanceled by the user')
             exit(0)
         finally:
@@ -131,6 +134,7 @@ class Controller(object):
     def handleInterrupt(self):
         self.output.printWarning('CTRL+C detected: Pausing threads...')
         self.fuzzer.pause()
+        #self.tr.print_diff() 
         try:
             while True:
                 msg = "[e]xit / [c]ontinue"
@@ -140,7 +144,7 @@ class Controller(object):
                     msg += "/ [s]kip target"
                 self.output.printInLine(msg + ': ')
                     
-                option = raw_input()
+                option = input()
                 if option.lower() == 'e':
                     self.exit = True
                     self.fuzzer.stop()
@@ -148,14 +152,14 @@ class Controller(object):
                 elif option.lower() == 'c':
                     self.fuzzer.play()
                     return
-                elif self.recursive and not self.directories.empty() and option.lower() == 'n':
+                elif not self.directories.empty() and option.lower() == 'n':
                     self.fuzzer.stop()
                     return
                 elif len(self.arguments.urlList) > 1 and option.lower() == 's':
                     raise SkipTargetInterrupt
                 else:
                     continue
-        except KeyboardInterrupt, SystemExit:
+        except KeyboardInterrupt as SystemExit:
             self.exit = True
             raise KeyboardInterrupt
 
@@ -172,14 +176,16 @@ class Controller(object):
                             self.reportManager.addPath(self.currentDirectory + path.path, path.status, path.response)
                     self.index += 1
                     self.output.printLastPathEntry(path, self.index, len(self.dictionary))
+                    #del(path)
                     path = self.fuzzer.getPath()
-                except (KeyboardInterrupt, SystemExit), e:
+                    
+                except (KeyboardInterrupt, SystemExit) as e:
                     self.handleInterrupt()
                     if self.exit:
                         raise e
                     else:
                         pass
-        except (KeyboardInterrupt, SystemExit), e:
+        except (KeyboardInterrupt, SystemExit) as e:
             if self.exit:
                 raise e
             self.handleInterrupt()

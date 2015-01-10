@@ -6,3 +6,8 @@ class Path(object):
 
     def __str__(self):
         return self.path
+
+    def __del__(self):
+        del(self.status)
+        del(self.response)
+        del(self.path)
