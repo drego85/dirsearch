@@ -76,10 +76,10 @@ class FuzzerDictionary(object):
         except IndexError:
             self.condition.release()
             return None, None
-        self.currentIndex = self.currentIndex + 1
-        currentIndex = self.currentIndex
+        self.currentIndex += 1
+        processedIndex = self.currentIndex
         self.condition.release()
-        return currentIndex, result
+        return processedIndex, result
 
     def __next__(self, basePath=None):
         _, path = self.nextWithIndex(basePath)

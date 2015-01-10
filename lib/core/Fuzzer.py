@@ -43,6 +43,7 @@ class Fuzzer(object):
         self.threadsCount = threads if len(self.dictionary) >= threads else len(self.dictionary)
         self.running = False
         self.testers = {}
+        self.getPathLock = threading.Lock()
 
     def wait(self):
         for thread in self.threads:
@@ -115,11 +116,13 @@ class Fuzzer(object):
         self.finishedEvent.set()
 
     def getPath(self):
+        self.getPathLock.acquire()
         path = None
         if not self.empty():
             path = self.testedPaths.get()  
         if not self.isFinished():
-            path = self.testedPaths.get()  
+            path = self.testedPaths.get()
+        self.getPathLock.release()
         return path
 
     def qsize(self):
@@ -133,29 +136,23 @@ class Fuzzer(object):
 
     def thread_proc(self):
         self.playEvent.wait()
-        try:
-            path = next(self.dictionary)
-            while path is not None:
-                try:
-                    status, response = self.testPath(path)
-                    self.testedPaths.put(Path(path=path, status=status, response=response))
-                except RequestException as e:
-                    print('\nUnexpected error:\n{0}\n'.format(e.args[0]['message']))
-                    sys.stdout.flush()
-                    continue
-                finally:
-                    path = next(self.dictionary)
-                    if not self.playEvent.isSet():
-                        self.pausedSemaphore.release()
-                        self.playEvent.wait()
-                    if not self.running:
-                        self.runningThreadsCount -= 1
-                        break
-                    if path is None:
-                        self.runningThreadsCount -= 1
-        except NotImplementedError:
-            pass
-        #except KeyboardInterrupt as SystemExit:
-            #pass
-
-
+    
+        path = next(self.dictionary)
+        while path is not None:
+            try:
+                status, response = self.testPath(path)
+                self.testedPaths.put(Path(path=path, status=status, response=response))
+            except RequestException as e:
+                print('\nUnexpected error:\n{0}\n'.format(e.args[0]['message']))
+                sys.stdout.flush()
+                continue
+            finally:
+                path = next(self.dictionary)
+                if not self.playEvent.isSet():
+                    self.pausedSemaphore.release()
+                    self.playEvent.wait()
+                if not self.running:
+                    self.runningThreadsCount -= 1
+                    break
+                if path is None:
+                    self.runningThreadsCount -= 111
