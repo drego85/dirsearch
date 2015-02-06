@@ -34,23 +34,18 @@
         <h1>
 <a name="dirs3arch" class="anchor" href="#dirs3arch"><span class="octicon octicon-link"></span></a>dirs3arch</h1>
 
-<p>Current Release: <a href="https://github.com/maurosoria/dirs3arch/releases/tag/v0.2.5">dirs3arch v0.2.5 ((2014.9.2)</a></p>
+<p>Current Release: <a href="https://github.com/maurosoria/dirs3arch/releases/tag/v0.3.0">dirs3arch v0.3.0 (2015.2.5)</a></p>
 
 <h2>
 <a name="overview" class="anchor" href="#overview"><span class="octicon octicon-link"></span></a>Overview</h2>
 
-<p>dirs3arch is a simple command line tool designed to brute force directories and files in websites.</p>
-
-<h2>
+<p>dirs3arch is a simple command line tool designed to brute force hidden directories and files in websites.</p>
+<p>It's written in python3 3 and all thirdparty libraries are included.<h2>
 <a name="screenshots" class="anchor" href="#screenshots"><span class="octicon octicon-link"></span></a>Screenshots</h2>
-
-<p>Windows version:</p>
-
-<p><img src="https://cloud.githubusercontent.com/assets/1757675/3620617/a4c2e278-0e03-11e4-9f56-a46f7b52d7f6.png" alt="dirs3arch windows"></p>
 
 <p>Linux version:</p>
 
-<p><img src="https://cloud.githubusercontent.com/assets/1757675/3620618/a4cce58e-0e03-11e4-8eab-48c3a20eff85.png" alt="dirs3arch_linux"></p>
+<p><img src="http://1.bp.blogspot.com/-QNckg89tt_4/VNO3NW0rjbI/AAAAAAAAAFo/7XEuBL4iTWw/s1600/dirs3arch_v0.3.0.png" alt="dirs3arch_linux"></p>
 
 <h2>
 <a name="operating-systems-supported" class="anchor" href="#operating-systems-supported"><span class="octicon octicon-link"></span></a>Operating Systems supported</h2>
@@ -70,46 +65,63 @@
 <li>Detect not found web pages when 404 not found errors are masked (.htaccess, web.config, etc).</li>
 <li>Recursive brute forcing</li>
 <li>HTTP(S) proxy support</li>
+<li>Batch processing (-L)</li>
 </ul><h2>
 <a name="examples" class="anchor" href="#examples"><span class="octicon octicon-link"></span></a>Examples</h2>
 
-<p><strong>Scan <a href="http://www.example.com/admin/">www.example.com/admin/</a> to find php files:</strong>
-<code>python dirs3arch.py -u http://www.example.com/admin/ -e php</code></p>
+<ul>
+<li><p><strong>Scan <a href="http://www.example.com/admin/">www.example.com/admin/</a> to find php files:</strong>
+<br /><code>python3 dirs3arch.py -u http://www.example.com/admin/ -e php</code></p></li>
 
-<p><strong>Scan <a href="http://www.example.com">www.example.com</a> to find asp and aspx files with SSL:</strong>
-<code>python dirs3arch.py -u https://www.example.com/ -e asp,aspx</code></p>
+<li><p><strong>Scan <a href="http://www.example.com">www.example.com</a> to find asp and aspx files with SSL:</strong><br />
+<code>python3 dirs3arch.py -u https://www.example.com/ -e asp,aspx</code></p></li>
 
-<p><strong>Scan <a href="http://www.example.com">www.example.com</a> with an alternative dictionary (from DirBuster):</strong>
-<code>python dirs3arch.py -u http://www.example.com/ -e php -w db/dirbuster/directory-list-2.3-small.txt</code></p>
+<li><p><strong>Scan <a href="http://www.example.com">www.example.com</a> with an alternative dictionary (from DirBuster):</strong><br />
+<code>python3 dirs3arch.py -u http://www.example.com/ -e php -w db/dirbuster/directory-list-2.3-small.txt</code></p></li>
 
-<p><strong>Scan with HTTP proxy (localhost port 8080):</strong>
-<code>python dirs3arch.py -u http://www.example.com/admin/ -e php --http-proxy localhost:8080</code></p>
+<li><p><strong>Scan with HTTP proxy (localhost port 8080):</strong><br />
+<code>python3 dirs3arch.py -u http://www.example.com/admin/ -e php --http-proxy localhost:8080</code></p></li>
 
-<p><strong>Scan with custom User-Agent and custom header (Referer):</strong>
-<code>python dirs3arch.py -u http://www.example.com/admin/ -e php --user-agent "My User-Agent" --header "Referer: www.google.com"</code></p>
+<li><p><strong>Scan with custom User-Agent and custom header (Referer):</strong><br />
+<code>python3 dirs3arch.py -u http://www.example.com/admin/ -e php --user-agent "My User-Agent" --header "Referer: www.google.com"</code></p></li>
 
-<p><strong>Scan recursively:</strong>
-<code>python dirs3arch.py -u http://www.example.com/admin/ -e php -r</code></p>
+<li><p><strong>Scan recursively:</strong><br />
+<code>python3 dirs3arch.py -u http://www.example.com/admin/ -e php -r</code></p></li>
 
-<p><strong>Scan recursively excluding server-status directory and 200 status codes:</strong>
-<code>python dirs3arch.py -u http://www.example.com/ -e php -r --exclude-subdir "server-status" --exclude-status 200</code></p>
+<li><p><strong>Scan recursively excluding server-status directory and 200 status codes:</strong><br />
+<code>python3 dirs3arch.py -u http://www.example.com/ -e php -r --exclude-subdir "server-status" --exclude-status 200</code></p></li>
 
-<p><strong>Scan includes, classes directories in /admin/</strong>
-<code>python dirs3arch.py -u http://www.example.com/admin/ -e php --scan-subdir "includes, classes"</code></p>
+<li><p><strong>Scan includes, classes directories in /admin/</strong><br />
+<code>python3 dirs3arch.py -u http://www.example.com/admin/ -e php --scan-subdir "includes, classes"</code></p></li>
 
-<p><strong>Scan without following HTTP redirects:</strong>
-<code>python dirs3arch.py -u http://www.example.com/ -e php --no-follow-redirects</code></p>
+<li><p><strong>Scan without following HTTP redirects:</strong><br />
+<code>python3 dirs3arch.py -u http://www.example.com/ -e php --no-follow-redirects</code></p></li>
 
-<p><strong>Scan VHOST "backend" at IP 192.168.1.1:</strong>
-<code>python dirs3arch.py -u http://backend/ --ip 192.168.1.1</code></p>
+<li><p><strong>Scan VHOST "backend" at IP 192.168.1.1:</strong><br />
+<code>python3 dirs3arch.py -u http://backend/ --ip 192.168.1.1</code></p></li>
 
-<p><strong>Scan <a href="http://www.example.com">www.example.com</a> to find wordpress plugins:</strong>
-<code>python dirs3arch.py -u http://www.example.com/wordpress/wp-content/plugins/ -e php -w db/wordpress/plugins.txt</code></p>
+<li><p><strong>Scan <a href="http://www.example.com">www.example.com</a> to find wordpress plugins:</strong><br />
+<code>python3 dirs3arch.py -u http://www.example.com/wordpress/wp-content/plugins/ -e php -w db/wordpress/plugins.txt</code></p>
+<li><p><strong>Batch processing:</strong><br />
+<code>python3 dirs3arch.py -L urllist.txt -e php</code></p>
+</ul>
+
+<h2>
+<a name="thirdparty" class="anchor" href="#thirdparty"><span class="octicon octicon-link"></span></a>Thirdparty code</h2>
+<ul>
+  <li>colorama</li>
+  <li>oset</li>
+  <li>urllib3</li>
+  <li>sqlmap</li>
+</ul>
 
 <h2>
 <a name="changelog" class="anchor" href="#changelog"><span class="octicon octicon-link"></span></a>Changelog</h2>
 
 <ul>
+<li>0.3.0 - 2015.2.5 Fixed issue3, fixed timeout exception, ported to python33, other bugfixes</li>
+<li>0.2.7 - 2014.11.21 Added Url List feature (-L). Changed output. Minor Fixes</li>
+<li>0.2.6 - 2014.9.12 Fixed bug when dictionary size is greater than threads count. Fixed URL encoding bug (issue2).</li>
 <li>0.2.5 - 2014.9.2 Shows Content-Length in output and reports, added default.conf file (for setting defaults) and report auto save feature added.</li>
 <li>0.2.4 - 2014.7.17 Added Windows support, --scan-subdir|--scan-subdirs argument added, --exclude-subdir|--exclude-subdirs added, --header argument added, dirbuster dictionaries added, fixed some concurrency bugs, MVC refactoring</li>
 <li>0.2.3 - 2014.7.7 Fixed some bugs, minor refactorings, exclude status switch, "pause/next directory" feature, changed help structure, expaded default dictionary</li>
@@ -129,7 +141,6 @@
     <div id="footer_wrap" class="outer">
       <footer class="inner">
         <p class="copyright">dirs3arch maintained by <a href="https://github.com/maurosoria">maurosoria</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
       </footer>
     </div>
 
